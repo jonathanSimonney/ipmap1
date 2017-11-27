@@ -4,6 +4,8 @@
 import argparse
 import asyncio
 import sys
+import xmltodict
+import json
 
 from my_lru_cache import lru_cache
 from aiohttp import web
@@ -32,13 +34,15 @@ async def handle(request):
     else:
         # Gather uname and date commands
 
-        print('nmap', '-sV', ip)
+        print('nmap', '-sV', '-oX', '-', ip)
 
-        commands = run_command('nmap', '-sV', ip)
+        commands = run_command('nmap', '-sV', '-oX', '-', ip)
 
         result = await commands
 
-        text = str(format(result))
+        xml_text = str(format(result))
+        json_text = str(json.dumps(xmltodict.parse(xml_text)))
+        text = json_text
     return web.Response(text=text)
 
 
