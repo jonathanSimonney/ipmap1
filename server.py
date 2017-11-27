@@ -1,18 +1,18 @@
 # !/usr/bin/env python
 
 # multiprocessing, threading
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from urllib.parse import urlparse, parse_qs
 import argparse
 import asyncio
 import sys
-from functools import lru_cache
+
+from my_lru_cache import lru_cache
 from aiohttp import web
 if sys.platform == 'win32':
     loop = asyncio.ProactorEventLoop()
     asyncio.set_event_loop(loop)
 
 
+@lru_cache(maxsize=32)
 async def run_command(*args):
     # Create subprocess
     process = await asyncio.create_subprocess_exec(
@@ -31,6 +31,8 @@ async def handle(request):
         text = "Hello"
     else:
         # Gather uname and date commands
+
+        print('nmap', '-sV', ip)
 
         commands = run_command('nmap', '-sV', ip)
 
